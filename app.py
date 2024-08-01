@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import yfinance as yf
 import seaborn as sns
-import keras
 import tensorflow as tf
 import streamlit as st
 import datetime
@@ -29,7 +28,6 @@ st.write(f"52 Week High: {info['fiftyTwoWeekHigh']}")
 st.write(f"52 Week Low: {info['fiftyTwoWeekLow']}")
 st.write(f"Market Cap: {info['marketCap']}")
 st.write(f"PE Ratio: {info['trailingPE']}")
-st.write(f"Dividend Yield: {info['dividendYield']}")
 
 # Calculate the 100-day moving average
 df['100MA'] = df['Adj Close'].rolling(window=100).mean()
@@ -325,16 +323,30 @@ elif model == 'Sentiment Analysis':
     # API to fetch news data
     # GNews API
     from gnewsclient import gnewsclient
-    from textblob import TextBlob
+    from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+    import re
+
+    # Combine stock name with news topic
+    search_topic = f"{stock_name}" + " stock market news"
 
     # Create a gnewsclient object
-    client = gnewsclient.NewsClient(language='english', location='united states', topic=stock_name, max_results=5)
+    client = gnewsclient.NewsClient(language='english', location='united states', topic=search_topic, max_results=5)
 
     # Fetch the news articles
     news_list = client.get_news()
 
     # Initialize a variable to hold the total sentiment
     total_sentiment = 0
+
+    # Initialize VADER sentiment analyzer
+    analyzer = SentimentIntensityAnalyzer()
+
+    # Function to clean text
+    def clean_text(text):
+        text = re.sub(r'http\S+', '', text)  # Remove URLs
+        text = re.sub(r'[^A-Za-z0-9\s]', '', text)  # Remove special characters
+        text = text.lower()  # Convert to lowercase
+        return text
 
     # Loop through the news articles
     for news in news_list:
@@ -343,11 +355,11 @@ elif model == 'Sentiment Analysis':
         description = news.get('description', '')
         text = title + ' ' + description
 
-        # Create a TextBlob object
-        blob = TextBlob(text)
+        # Clean the text
+        cleaned_text = clean_text(text)
 
-        # Get the sentiment of the text
-        sentiment = blob.sentiment.polarity
+        # Get the sentiment of the text using VADER
+        sentiment = analyzer.polarity_scores(cleaned_text)['compound']
 
         # Add the sentiment to the total sentiment
         total_sentiment += sentiment
@@ -361,5 +373,5 @@ elif model == 'Sentiment Analysis':
 
     # Print the average sentiment
     st.write('Average sentiment:', average_sentiment)
-
+    
 # streamlit run /Users/safwanislam/Desktop/stockprediction/app.py 
