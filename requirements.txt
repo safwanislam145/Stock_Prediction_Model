@@ -1,0 +1,11 @@
+numpy
+pandas
+matplotlib
+yfinance
+seaborn
+tensorflow
+streamlit
+scikit-learn
+gnews
+textblob
+vaderSentiment
