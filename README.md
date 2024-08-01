@@ -60,13 +60,7 @@ streamlit
 sklearn
 textblob
 gnewsclient
-
-Project Structure:
-stock_prediction_model/
-│
-├── app.py                    # Main Streamlit app file
-├── requirements.txt          # List of required Python packages
-└── README.md                 # This README file
+vaderSentiment
 
 Notes
 Adjust the model training epochs and batch size as needed to balance accuracy and performance.
