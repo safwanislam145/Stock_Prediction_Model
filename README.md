@@ -39,6 +39,7 @@ The app will display the closing price of the stock over time, moving averages, 
 Risk Analysis:
 
 View the Sharpe Ratio for the stock and an explanation of what the ratio means.
+
 Select a Prediction Model:
 
 Choose between LSTM, Linear Regression, Random Forest, or Sentiment Analysis by clicking the respective button.
